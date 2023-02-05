@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book exchange app</title>
+    <link
+    rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous"
+  />
+
+  </head>
+  <body>
+      <nav class="navbar navbar-expand-lg navbar-light static-top"  style="background-color: #198754">
+        <div class="container">
+          <a class="navbar-brand" href="/">
+            <img src="data:image/png;base64,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" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+            Booktopia
+          </a>
+          <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+              {% if current_user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="/register">Register </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/login">Log in</a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+    <div class="container">
+      <br />
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %} {% endif %} {% endwith %} {% block content %} {% endblock %}
+    </div>
+    <!-- Bootstrap core JavaScript -->
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+      integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+      integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+      crossorigin="anonymous"
+    ></script>
+</body>
+</html>
