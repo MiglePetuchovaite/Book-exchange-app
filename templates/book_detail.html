@@ -1,11 +1,9 @@
 {% extends "base.html" %} {% block content %}
 <br />
-<h1>{{ book.author }}</h1>
-<div class="mb-5">
+<h1>{{ book.title }}</h1>
+<br>
 <img class="img-thumbnail" src="{{ book.photo }}"></img>
 <p>Author: {{ book.author }}</p>
 <p>Year: {{ book.year }}</p>
 <p> {{ book.summary }}</p>
-</div>
-<br>
 {% endblock %}

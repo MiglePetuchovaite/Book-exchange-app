@@ -39,6 +39,8 @@ class Book(db.Model):
     year = db.Column(db.Integer, nullable=False)
     summary = db.Column(db.Text, nullable=False)
     photo = db.Column(db.String(20), nullable=False, default='default.jpg')
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user = db.relationship("User", lazy=True)
 
 
 @login_manager.user_loader
@@ -84,6 +86,13 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
+
+@app.route("/profile")
+@login_required
+def account():
+    return render_template('profile.html')
+
+
 @app.route('/')
 def index():
     books = Book.query.all()
@@ -104,17 +113,17 @@ def wishlist():
 @app.route('/my_offers', methods=['GET', 'POST'])
 @login_required
 def my_offers():
-    books = Book.query.all()[::]
+    books = Book.query.filter_by(user_id=current_user.id).all()
     forma = forms.BookForm()
     if forma.validate_on_submit():
       if forma.photo.data:
           photo_path = save_picture(forma.photo.data)
 
-      new_offer = Book(title=forma.title.data, author=forma.author.data, year=forma.year.data, summary=forma.summary.data, photo=photo_path)
+      new_offer = Book(title=forma.title.data, author=forma.author.data, year=forma.year.data, summary=forma.summary.data, photo=photo_path, user_id=current_user.id)
 
       db.session.add(new_offer)
       db.session.commit()
-      books = Book.query.all()[::]
+      books = Book.query.filter_by(user_id=current_user.id).all()
       flash(f"Book is added", 'success')
       return redirect(url_for("index", form=False, books=books))
     return render_template('my_offers.html',form=forma, books=books)
@@ -127,14 +136,16 @@ def save_picture(form_picture):
     picture_path = os.path.join(app.root_path, 'static/images', picture_fn)
     picture_relative_path = '/static/images/' + picture_fn
 
-    output_size = (125, 125)
+    output_size = (225, 225)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
     i.save(picture_path)
 
     return picture_relative_path
 
-
+# @app.route("/")
+# def index():
+#     return render_template("index.html")
 
 
 if __name__ == '__main__':
