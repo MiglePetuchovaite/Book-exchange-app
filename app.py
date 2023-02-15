@@ -3,16 +3,20 @@ from flask import Flask, redirect, render_template, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, current_user, logout_user, login_user, login_required
+import secrets
+from PIL import Image
 import forms
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
+
+
 app.app_context().push()
 app.config['SECRET_KEY'] = '4654f5dfadsrfasdr54e6rae'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(basedir, 'bills.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(basedir, 'books.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
 
+db = SQLAlchemy(app)
 
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
@@ -25,6 +29,16 @@ class User(db.Model, UserMixin):
   name = db.Column("Full Name", db.String(20), unique=True, nullable=False)
   email = db.Column("Email", db.String(120), unique=True, nullable=False)
   password = db.Column("Password", db.String(60), unique=True, nullable=False)
+
+
+class Book(db.Model):
+    __tablename__ = "book"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    author = db.Column(db.String(255), nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    summary = db.Column(db.Text, nullable=False)
+    photo = db.Column(db.String(20), nullable=False, default='default.jpg')
 
 
 @login_manager.user_loader
@@ -44,7 +58,7 @@ def register():
         user = User(name=form.name.data, email=form.email.data, password=coded_password)
         db.session.add(user)
         db.session.commit()
-        flash('Registration Successful! Login!', 'success')
+        flash('Registration Successful! Log in!', 'success')
         return redirect(url_for('index'))
     return render_template('register.html', title='Register', form=form)
 
@@ -71,10 +85,56 @@ def logout():
     return redirect(url_for('index'))
 
 @app.route('/')
-
-
 def index():
-    return render_template('index.html')
+    books = Book.query.all()
+    return render_template('index.html', books=books)
+
+
+@app.route('/book/<int:id>')
+def book(id):
+    book = Book.query.get(id)
+    return render_template('book_detail.html', book=book)
+
+
+@app.route('/my_wishes')
+def wishlist():
+    return render_template('my_wishes.html')
+
+
+@app.route('/my_offers', methods=['GET', 'POST'])
+@login_required
+def my_offers():
+    books = Book.query.all()[::]
+    forma = forms.BookForm()
+    if forma.validate_on_submit():
+      if forma.photo.data:
+          photo_path = save_picture(forma.photo.data)
+
+      new_offer = Book(title=forma.title.data, author=forma.author.data, year=forma.year.data, summary=forma.summary.data, photo=photo_path)
+
+      db.session.add(new_offer)
+      db.session.commit()
+      books = Book.query.all()[::]
+      flash(f"Book is added", 'success')
+      return redirect(url_for("index", form=False, books=books))
+    return render_template('my_offers.html',form=forma, books=books)
+
+
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/images', picture_fn)
+    picture_relative_path = '/static/images/' + picture_fn
+
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_relative_path
+
+
 
 
 if __name__ == '__main__':

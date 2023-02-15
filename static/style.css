@@ -1,0 +1,32 @@
+/* .flex-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-left: -15px;
+    margin-right: -15px;
+    flex-wrap: wrap;
+}
+
+.item {
+  width: 33%;
+}
+
+.item:last-of-type {
+  margin-right: auto;
+}
+
+.item__inner {
+  margin: 15px;
+  border: 1px solid black;
+}
+
+.img {
+  background-color: red;
+  max-height: 100%;
+  height: 350px;
+  display: block;
+}
+
+h5 {
+  margin: 10px;
+} */

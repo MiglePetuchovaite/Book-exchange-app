@@ -1,0 +1,43 @@
+{% extends "base.html" %} {% block content %}
+<h1>MY OFFERS</h1>
+<br />
+
+<h3>Offer a book</h3>
+<form class="col-sm-7" action="/my_offers" method="POST" enctype="multipart/form-data">
+  {{ form.hidden_tag() }}
+  <div class="d-flex flex-row mb-3">
+  <div class="form-group p-2">
+    {{ form.title.label(class="form-control-label") }} {{
+    form.title(class="form-control") }}
+  </div>
+  <div class="form-group p-2">
+    {{ form.author.label(class="form-control-label") }} {{
+    form.author(class="form-control") }}
+  </div>
+  <div class="form-group p-2">
+    {{ form.year.label(class="form-control-label") }} {{
+    form.year(class="form-control") }}
+  </div>
+</div>
+  <div class="form-group form-floating mb-3">
+    {{ form.summary.label(class="form-control-label") }} {{
+    form.summary(class="form-control") }}
+  </div>
+  <div class="form-group">
+    {{ form.photo.label() }}
+    {{ form.photo(class="form-control-file") }}
+</div>
+<br>
+{{ form.submit (class="btn btn-outline-success") }}
+</form>
+<br>
+<hr>
+{% for book in books %}
+<div >
+<img class="img-thumbnail" src="{{ book.photo }}"></img>
+<h5>Title: {{ book.title }}</h5>
+<p>Author: {{ book.author }}</p>
+</div>
+<br>
+{% endfor %}
+{% endblock %}

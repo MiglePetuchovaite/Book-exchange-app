@@ -1,5 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, BooleanField, StringField, PasswordField, FloatField, SelectField
+from wtforms import SubmitField, BooleanField, StringField, PasswordField, FloatField, TextAreaField
+from flask_wtf.file import FileField, FileAllowed
+from wtforms.validators import DataRequired, Length
 from wtforms.validators import DataRequired, ValidationError, EqualTo
 import app
 
@@ -25,3 +27,13 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', [DataRequired()])
     remember = BooleanField('Remember me')
     submit = SubmitField('Log in')
+
+
+class BookForm(FlaskForm):
+    title = StringField('Title', [DataRequired(), Length(max=25)])
+    author = StringField('Author', [DataRequired(), Length(max=25)])
+    year = FloatField('Year', [DataRequired()])
+    summary = TextAreaField('Summary', [DataRequired(), Length(max=3500)])
+    photo = FileField('Picture', validators=[FileAllowed(['jpg', 'png'])])
+    submit = SubmitField('Submit')
+ 

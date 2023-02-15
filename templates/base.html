@@ -24,7 +24,13 @@
             <ul class="navbar-nav ml-auto">
               {% if current_user.is_authenticated %}
               <li class="nav-item">
-                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link" href="/"></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/">Notification</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/">Profile</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="/logout">Logout</a>
@@ -38,9 +44,29 @@
               </li>
               {% endif %}
             </ul>
+
           </div>
         </div>
       </nav>
+      <br>
+      {% if current_user.is_authenticated %}
+      <div class="container">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Books</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/my_wishes">Wishes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/my_offers">Offers</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/">Swaps</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
     <div class="container">
       <br />
       {% with messages = get_flashed_messages(with_categories=true) %} {% if
@@ -48,6 +74,7 @@
       <div class="alert alert-{{ category }}">{{ message }}</div>
       {% endfor %} {% endif %} {% endwith %} {% block content %} {% endblock %}
     </div>
+  
     <!-- Bootstrap core JavaScript -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
