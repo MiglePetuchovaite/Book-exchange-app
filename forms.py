@@ -32,8 +32,8 @@ class LoginForm(FlaskForm):
 class BookForm(FlaskForm):
     title = StringField('Title', [DataRequired(), Length(max=25)])
     author = StringField('Author', [DataRequired(), Length(max=25)])
-    year = FloatField('Year', [DataRequired()])
-    summary = TextAreaField('Summary', [DataRequired(), Length(max=3500)])
+    year = FloatField('Year', [DataRequired(),])
+    summary = TextAreaField('Summary',  [DataRequired(), Length(max=3500)])
     photo = FileField('Picture', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Submit')
  

@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block content %}
 <h1 >BOOKS AVAILABLE</h1>
 <br>
-<div class="d-inline-flex" style="width:100% justify-content-space-between flex-wrap ms-n4 me-n4">
+<div  class= "d-flex flex-wrap justify-content-between ms-n4 me-n4" style="width:100%" >
 {% for book in books %}
 <div class="card mx-4" style="width:33%" > <a  href="{{ url_for('book', id=book.id) }}" class= "text-decoration-none">
 <img class="card-img-top" style="max-height:100% " src="{{ book.photo }}"></img>

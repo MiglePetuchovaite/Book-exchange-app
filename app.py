@@ -3,9 +3,9 @@ from flask import Flask, redirect, render_template, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, current_user, logout_user, login_user, login_required
+import forms
 import secrets
 from PIL import Image
-import forms
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -117,15 +117,13 @@ def my_offers():
     forma = forms.BookForm()
     if forma.validate_on_submit():
       if forma.photo.data:
-          photo_path = save_picture(forma.photo.data)
-
+        photo_path = save_picture(forma.photo.data)
       new_offer = Book(title=forma.title.data, author=forma.author.data, year=forma.year.data, summary=forma.summary.data, photo=photo_path, user_id=current_user.id)
-
       db.session.add(new_offer)
       db.session.commit()
       books = Book.query.filter_by(user_id=current_user.id).all()
       flash(f"Book is added", 'success')
-      return redirect(url_for("index", form=False, books=books))
+      return redirect(url_for("my_offers", form=False, books=books))
     return render_template('my_offers.html',form=forma, books=books)
 
 
@@ -142,6 +140,35 @@ def save_picture(form_picture):
     i.save(picture_path)
 
     return picture_relative_path
+
+
+@app.route("/update/<int:id>", methods=['GET', 'POST'])
+@login_required
+def update(id):
+    forma = forms.BookForm()
+    book = Book.query.get(id)
+    if forma.validate_on_submit() :
+        book.title = forma.title.data
+        book.author = forma.author.data
+        book.year = forma.year.data
+        book.summary = forma.summary.data
+        db.session.commit()
+        return redirect(url_for('my_offers'))
+    forma.title.data = book.title
+    forma.author.data = book.author
+    forma.year.data = book.year
+    forma.summary.data = book.summary
+    return render_template("update.html", form=forma, book=book)
+
+
+@app.route("/delete/<int:id>")
+@login_required
+def delete(id):
+    offer = Book.query.get(id)
+    db.session.delete(offer)
+    db.session.commit()
+    return redirect(url_for('my_offers'))
+
 
 # @app.route("/")
 # def index():
