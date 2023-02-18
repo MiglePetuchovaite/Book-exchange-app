@@ -3,6 +3,7 @@ from wtforms import SubmitField, BooleanField, StringField, PasswordField, Float
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, Length
 from wtforms.validators import DataRequired, ValidationError, EqualTo
+from wtforms_sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 import app
 
 class RegisterForm(FlaskForm):
@@ -27,7 +28,6 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', [DataRequired()])
     remember = BooleanField('Remember me')
     submit = SubmitField('Log in')
-
 
 class BookForm(FlaskForm):
     title = StringField('Title', [DataRequired(), Length(max=25)])

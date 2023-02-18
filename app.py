@@ -6,6 +6,7 @@ from flask_login import LoginManager, UserMixin, current_user, logout_user, logi
 import forms
 import secrets
 from PIL import Image
+from sqlalchemy import Table, Column, Integer, ForeignKey
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -23,13 +24,12 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'register'
 login_manager.login_message_category = 'info'
 
-class User(db.Model, UserMixin):
-  __tablename__ = "user"
-  id = db.Column(db.Integer, primary_key=True)
-  name = db.Column("Full Name", db.String(20), unique=True, nullable=False)
-  email = db.Column("Email", db.String(120), unique=True, nullable=False)
-  password = db.Column("Password", db.String(60), unique=True, nullable=False)
-
+user_wishlist = Table(
+    "user_wishlist",
+    db.metadata,
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
+    db.Column("book_id", db.Integer, db.ForeignKey("book.id"), primary_key=True),
+)
 
 class Book(db.Model):
     __tablename__ = "book"
@@ -41,6 +41,15 @@ class Book(db.Model):
     photo = db.Column(db.String(20), nullable=False, default='default.jpg')
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     user = db.relationship("User", lazy=True)
+    users = db.relationship("User", secondary=user_wishlist, back_populates="wished_books")
+
+class User(db.Model, UserMixin):
+  __tablename__ = "user"
+  id = db.Column(db.Integer, primary_key=True)
+  name = db.Column("Full Name", db.String(20), unique=True, nullable=False)
+  email = db.Column("Email", db.String(120), unique=True, nullable=False)
+  password = db.Column("Password", db.String(60), unique=True, nullable=False)
+  wished_books = db.relationship("Book", secondary=user_wishlist, back_populates="users")
 
 
 @login_manager.user_loader
@@ -99,15 +108,43 @@ def index():
     return render_template('index.html', books=books)
 
 
-@app.route('/book/<int:id>')
+# display the button
+@app.route('/book/<int:id>', methods=['GET', 'POST']) 
 def book(id):
     book = Book.query.get(id)
-    return render_template('book_detail.html', book=book)
+    current_user_id = current_user.get_id()  
+    is_logged = current_user.is_authenticated
+    is_owner = current_user.is_authenticated and int(current_user_id) == int(book.user_id)
+    is_in_wishlist = is_owner == False and is_logged == True and book in current_user.wished_books
+    return render_template('book_detail.html', book=book, is_owner=is_owner, is_logged=is_logged, is_in_wishlist=is_in_wishlist)
 
 
-@app.route('/my_wishes')
+# handle the button click
+@app.route('/books/<int:book_id>/wishlist', methods=['GET'])
+@login_required
+def add_to_wishlist(book_id):
+    book = Book.query.get(book_id)
+    current_user.wished_books.append(book)
+    db.session.add(current_user)
+    db.session.commit()
+    return redirect(request.referrer)
+
+
+@app.route('/books/<int:book_id>/wishlist/remove', methods=['GET'])
+@login_required
+def remove_from_wishlist(book_id):
+    book = Book.query.get(book_id)
+    current_user.wished_books.remove(book)
+    db.session.add(current_user)
+    db.session.commit()
+    return redirect(request.referrer)
+
+
+@app.route('/wishlist', methods=['GET'])
+@login_required
 def wishlist():
-    return render_template('my_wishes.html')
+    wished_books = current_user.wished_books
+    return render_template('wishlist.html', wished_books=wished_books)
 
 
 @app.route('/my_offers', methods=['GET', 'POST'])

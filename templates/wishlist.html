@@ -1,0 +1,16 @@
+{% extends "base.html" %} {% block content %}
+<h1>MY WISHLIST</h1>
+<br>
+{% for book in wished_books %}
+<div>
+<img class="img-thumbnail" src="{{ book.photo }}" >
+<h6>{{ book.title }}</h6>
+<p>{{ book.author }}</p>
+<p style="color: green">Uploaded by {{ book.user.name }}</p> 
+<a class="btn btn-outline-danger" href="/books/{{book.id}}/wishlist/remove">
+    Remove
+</a>
+</div>
+<br>
+{% endfor %}
+{% endblock %}
