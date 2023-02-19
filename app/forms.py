@@ -1,10 +1,14 @@
+from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, BooleanField, StringField, PasswordField, FloatField, TextAreaField
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, Length
 from wtforms.validators import DataRequired, ValidationError, EqualTo
 from wtforms_sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
-import app
+from app.models import User, Book
+
+
+
 
 class RegisterForm(FlaskForm):
     name = StringField('Full Name', [DataRequired()])
