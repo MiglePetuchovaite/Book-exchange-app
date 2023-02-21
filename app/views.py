@@ -2,8 +2,9 @@ from flask import redirect, render_template, url_for, flash, request
 from flask_login import LoginManager, UserMixin, current_user, logout_user, login_user, login_required
 from app import app, db, login_manager, bcrypt
 from app import forms
-from app.models import Book, User
+from app.models import Book, User, ReservationRequest
 from app.utils import save_picture
+from sqlalchemy.orm import sessionmaker
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -117,8 +118,6 @@ def my_offers():
     return render_template('my_offers.html',form=forma, books=books)
 
 
-
-
 @app.route("/update/<int:id>", methods=['GET', 'POST'])
 @login_required
 def update(id):
@@ -147,6 +146,32 @@ def delete(id):
     return redirect(url_for('my_offers'))
 
 
-# @app.route("/")
-# def index():
-#     return render_template("index.html")
+@app.route('/books/<int:book_id>/wishlist/order', methods=['GET'])
+@login_required
+def add_to_order(book_id):
+    book = Book.query.get(book_id)
+    current_user.ordered_books.append(book)
+    flash(f"Book is added to your orders", 'success')
+    db.session.add(current_user)
+    db.session.commit()
+    return redirect(request.referrer)
+
+
+@app.route('/books/<int:book_id>/order/remove', methods=['GET'])
+@login_required
+def remove_from_orders(book_id):
+    book = Book.query.get(book_id)
+    current_user.ordered_books.remove(book)
+    db.session.add(current_user)
+    db.session.commit()
+    return redirect(request.referrer)
+
+
+@app.route('/order', methods=['GET'])
+@login_required
+def order():
+    ordered_books = current_user.ordered_books
+    user_reservation_requests = User.query.join(ReservationRequest, User.id == ReservationRequest.user_id).join(Book, ReservationRequest.book_id == Book.id).filter(Book.user_id == current_user.get_id()).add_columns(Book.title, User.name.label('name'))
+
+    return render_template('order.html', ordered_books=ordered_books, user_reservation_requests=user_reservation_requests)
+

@@ -1,0 +1,23 @@
+{% extends "base.html" %} {% block content %}
+<h3>Your book request is sent to:</h3>
+<br />
+{% for book in ordered_books %}
+<div>
+  <p style="color: green">{{ book.user.name }}</p>
+  <p>{{ book.title }} by {{ book.author }}</p>
+  <a class="btn btn-outline-danger" href="/books/{{book.id}}/order/remove">
+    Cancel
+  </a>
+</div>
+<hr />
+{% endfor %}
+<h3>You received book request from:</h3>
+<br />
+{% for user_reservation_request in user_reservation_requests: %}
+<div>
+  <p> {{
+    user_reservation_request.name }} requested a book:
+    {{user_reservation_request.title}} </p>
+</div>
+<hr>
+{% endfor %} {% endblock %}

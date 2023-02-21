@@ -8,8 +8,6 @@ from wtforms_sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from app.models import User, Book
 
 
-
-
 class RegisterForm(FlaskForm):
     name = StringField('Full Name', [DataRequired()])
     email = StringField('Email', [DataRequired()])
