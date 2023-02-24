@@ -171,7 +171,46 @@ def remove_from_orders(book_id):
 @login_required
 def order():
     ordered_books = current_user.ordered_books
-    user_reservation_requests = User.query.join(ReservationRequest, User.id == ReservationRequest.user_id).join(Book, ReservationRequest.book_id == Book.id).filter(Book.user_id == current_user.get_id()).add_columns(Book.title, User.name.label('name'))
+    user_reservation_requests = User.query.join(ReservationRequest, User.id == ReservationRequest.user_id)\
+        .join(Book, ReservationRequest.book_id == Book.id)\
+        .filter(Book.user_id == current_user.get_id())\
+        .add_columns(Book.title, User.name.label('name'), ReservationRequest.user_id.label('user_id'), ReservationRequest.book_id.label('book_id'))
 
     return render_template('order.html', ordered_books=ordered_books, user_reservation_requests=user_reservation_requests)
 
+
+@app.route('/reject-reservation/book/<int:book_id>/user/<int:user_id>', methods=['GET'])
+@login_required
+def reject_reservation(book_id, user_id):
+    reservation = ReservationRequest.query.filter_by(user_id=user_id, book_id=book_id).first()
+    if not reservation:
+        return "no such reservation"
+
+    book = Book.query.get(book_id)
+
+    if book.user != current_user:
+        return "book does not belong to you"
+    
+    db.session.delete(reservation)
+    db.session.commit()
+        
+    return redirect(request.referrer)
+
+
+@app.route('/approve-reservation/book/<int:book_id>/user/<int:user_id>', methods=['GET'])
+@login_required
+def approve_reservation(book_id, user_id):
+    reservation = ReservationRequest.query.filter_by(user_id=user_id, book_id=book_id).first()
+    if not reservation:
+        return "no such reservation"
+
+    book = Book.query.get(book_id)
+
+    if book.user != current_user:
+        return "book does not belong to you"
+    
+    book.assigned_to = user_id
+    db.session.delete(reservation)
+    db.session.commit()
+        
+    return redirect(request.referrer)

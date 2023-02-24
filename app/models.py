@@ -32,6 +32,7 @@ class Book(db.Model):
     summary = db.Column(db.Text, nullable=False)
     photo = db.Column(db.String(20), nullable=False, default='default.jpg')
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    assigned_to = db.Column(db.Integer)
     user = db.relationship("User", lazy=True)
     users = db.relationship("User", secondary=user_wishlist, back_populates="wished_books")
     reservations = db.relationship("User", secondary=reservation_request, back_populates="ordered_books")
