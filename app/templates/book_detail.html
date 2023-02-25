@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% block content %}
 <br />
-<h1>{{ book.title }}</h1>
+<h1 class="text-center">{{ book.title }}</h1>
 <br />
 
 <div>
@@ -8,7 +8,7 @@
   <p>Author: {{ book.author }}</p>
   <p>Year: {{ book.year }}</p>
   <p>{{ book.summary }}</p>
-  <p style="color: green">Uploaded by {{ book.user.name }}</p>
+  <p style="color: green">Owner: {{ book.user.name }}</p>
 </div>
 
 {% if is_owner == False and is_logged == True and is_in_wishlist == False %}

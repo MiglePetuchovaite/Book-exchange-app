@@ -1,19 +1,23 @@
 {% extends "base.html" %} {% block content %}
-<h1>MY WISHLIST</h1>
+<h1 class="text-center">MY WISHLIST</h1>
 <br>
-{% for book in wished_books %}
-<div>
+<div class="row">
+ {% for book in wished_books %}
+ <div class="col-12 col-md-6 col-lg-4 mb-2" >
+    <div class="p-3r">
 <img class="img-thumbnail" src="{{ book.photo }}" >
 <h6>{{ book.title }}</h6>
 <p>{{ book.author }}</p>
-<p style="color: green">Uploaded by {{ book.user.name }}</p> 
+<p style="color: green">Belongs to {{ book.user.name }}</p> 
 <a class="btn btn-outline-danger" href="/books/{{book.id}}/wishlist/remove">
     Remove
 </a>
 <a class="btn btn-outline-success" href="/books/{{book.id}}/wishlist/order">
     Order
 </a>
+    </div>
 </div>
 <br>
-{% endfor %}
+ {% endfor %}
+ </div>
 {% endblock %}
