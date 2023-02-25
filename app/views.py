@@ -58,7 +58,8 @@ def account():
 
 @app.route('/')
 def index():
-    books = Book.query.all()
+    page = request.args.get('page', 1, type=int)
+    books = Book.query.paginate(page=page, per_page=3)
     return render_template('index.html', books=books)
 
 
