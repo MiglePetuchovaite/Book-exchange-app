@@ -1,0 +1,52 @@
+{% extends "base.html" %} {% block content %}
+<h1 class="text-center">MY OFFERS</h1>
+<br />
+
+<h3>Offer a book</h3>
+<form action="/my_offers" method="POST" enctype="multipart/form-data">
+  {{ form.hidden_tag() }}
+  <div class="d-flex flex-row mb-3">
+  <div class="form-group p-2" >
+    {{ form.title.label(class="form-control-label") }} {{
+    form.title(class="form-control" ) }}
+  </div>
+  <div class="form-group p-2">
+    {{ form.author.label(class="form-control-label") }} {{
+    form.author(class="form-control") }}
+  </div>
+  <div class="form-group p-2">
+    {{ form.year.label(class="form-control-label") }} {{
+    form.year(class="form-control") }}
+  </div>
+</div>
+  <div class="mb-3">
+    {{ form.summary.label(class="form-control-label") }} {{
+    form.summary(class="form-control") }}
+  </div>
+  <div class="form-group">
+    {{ form.photo.label() }}
+    {{ form.photo(class="form-control-file") }}
+</div>
+<br>
+{{ form.submit (class="btn btn-outline-success") }}
+</form>
+<br>
+<hr>
+<div class="row">
+  {% for book in books %}
+   <div class="col-12 col-md-6 col-lg-4 mb-2"> 
+      <div class="p-3r">
+        <a href="{{ url_for('book', id=book.id) }} ">
+           <img class="img-thumbnail" src="{{ book.photo }}" >
+        </a>
+            <h5>{{ book.title }}</h5>
+            <p>Author: {{ book.author }}</p>
+            <a type="button" class="btn btn-outline-warning" href="{{ url_for('update', id=book['id']) }}">Edit</a>
+            <a type="button" class="btn btn-outline-danger" aria-disabled="true"  href="{{ url_for('delete', id=book['id']) }}">Delete</a>
+        </div>
+        <br>
+    </div>
+
+   {% endfor %}
+</div>
+{% endblock %}
