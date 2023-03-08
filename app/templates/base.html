@@ -34,8 +34,14 @@
             <li class="nav-item">
               <a class="nav-link" href="/"></a>
             </li>
+            <li>
+              <form action = "{{ url_for('search') }}" method="POST" >
+              {{ form.hidden_tag() }}
+              <input name="searched" class="form-control" type="text" placeholder="Search">
+              </form>
+          </li>
             <li class="nav-item">
-              <a class="nav-link" href="/">Notification</a>
+              <a class="nav-link" href="/order">Notification</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/profile">Profile</a>

@@ -9,7 +9,7 @@ from app.models import User, Book
 
 
 class RegisterForm(FlaskForm):
-    name = StringField('Full Name', [DataRequired()])
+    name = StringField('User Name', [DataRequired()])
     email = StringField('Email', [DataRequired()])
     password = PasswordField('Password', [DataRequired()])
     repeat_password = PasswordField("Repeat Password", [EqualTo('password', "Password have to macth.")])
@@ -39,3 +39,7 @@ class BookForm(FlaskForm):
     photo = FileField('Picture', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Submit')
  
+
+class SearchForm(FlaskForm):
+    searched = StringField('Search', [DataRequired()])
+    submit = SubmitField('Search')

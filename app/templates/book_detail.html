@@ -10,7 +10,6 @@
   <p>{{ book.summary }}</p>
   <p style="color: green">Owner: {{ book.user.name }}</p>
 </div>
-
 {% if is_owner == False and is_logged == True and is_in_wishlist == False %}
 <a class="btn btn-success" href="/books/{{book.id}}/wishlist"
   >Add to Whislist
@@ -31,4 +30,5 @@
 <a class="btn btn-danger" href="/books/{{book.id}}/wishlist/remove"
   >Remove from Whislist
 </a>
-{% endif %} {% endif %} {% endblock %}
+{% endif %} {% endif %}
+ {% endblock %}

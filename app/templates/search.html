@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+{% for book in books %}
+<br />
+<h3>{{ book.title }}</h3>
+<br />
+<div>
+    <a href="{{ url_for('book', id=book.id) }}" class="text-decoration-none">
+    <img class="img-thumbnail" src="{{ book.photo }}" /></a>
+    <p style="color: green">Owner: {{ book.user.name }}</p>
+</div>
+{% endfor %}
+{% endblock %}

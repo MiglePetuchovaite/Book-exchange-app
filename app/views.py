@@ -63,6 +63,23 @@ def index():
     return render_template('index.html', books=books)
 
 
+@app.context_processor
+def base():
+    form = forms.SearchForm()
+    return dict(form = form)
+
+
+@app.route('/search', methods=["POST"])
+@login_required
+def search():
+    forma = forms.SearchForm()
+    books = Book.query
+    if forma.validate_on_submit():
+        book.searched = forma.searched.data
+        books = books.filter(Book.title.like('%' + book.searched + '%'))
+        return render_template("search.html", form=forma, searched=book.searched, books=books)
+
+
 # display the button
 @app.route('/book/<int:id>', methods=['GET', 'POST']) 
 def book(id):
@@ -107,10 +124,11 @@ def wishlist():
 def my_offers():
     books = Book.query.filter_by(user_id=current_user.id).all()
     forma = forms.BookForm()
+    new_offer = Book(title=forma.title.data, author=forma.author.data, year=forma.year.data, summary=forma.summary.data, user_id=current_user.id)
     if forma.validate_on_submit():
       if forma.photo.data:
         photo_path = save_picture(forma.photo.data)
-      new_offer = Book(title=forma.title.data, author=forma.author.data, year=forma.year.data, summary=forma.summary.data, photo=photo_path, user_id=current_user.id)
+        new_offer.photo = photo_path   
       db.session.add(new_offer)
       db.session.commit()
       books = Book.query.filter_by(user_id=current_user.id).all()
@@ -176,7 +194,6 @@ def order():
         .join(Book, ReservationRequest.book_id == Book.id)\
         .filter(Book.user_id == current_user.get_id())\
         .add_columns(Book.title, User.name.label('name'), ReservationRequest.user_id.label('user_id'), ReservationRequest.book_id.label('book_id'))
-
     return render_template('order.html', ordered_books=ordered_books, user_reservation_requests=user_reservation_requests)
 
 
@@ -186,15 +203,11 @@ def reject_reservation(book_id, user_id):
     reservation = ReservationRequest.query.filter_by(user_id=user_id, book_id=book_id).first()
     if not reservation:
         return "no such reservation"
-
     book = Book.query.get(book_id)
-
     if book.user != current_user:
         return "book does not belong to you"
-    
     db.session.delete(reservation)
     db.session.commit()
-        
     return redirect(request.referrer)
 
 
@@ -204,12 +217,9 @@ def approve_reservation(book_id, user_id):
     reservation = ReservationRequest.query.filter_by(user_id=user_id, book_id=book_id).first()
     if not reservation:
         return "no such reservation"
-
     book = Book.query.get(book_id)
-
     if book.user != current_user:
-        return "book does not belong to you"
-    
+        return "book does not belong to you" 
     book.assigned_to = user_id
     db.session.delete(reservation)
     db.session.commit()
