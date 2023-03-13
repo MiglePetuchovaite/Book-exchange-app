@@ -64,25 +64,45 @@ Static (/images): Images filing with Flask-Pillow.
 
 .
 |──────app/
+
 | |────__init__.py
+
 | |────static/
+
 | |────templates/
+
 | | |────base.html
+
 | | |────book_detail.html
+
 | | |────index.html
+
 | | |────login.html
+
 | | |────my_offers.html
+
 | | |────order.html
+
 | | |────profile.html
+
 | | |────register.html
+
 | | |────search.html
+
 | | |────update.html
+
 | | |────wishlist.html
+
 | |────forms.py
+
 | |────models.py
+
 | |────utils.py
+
 | |────views.py
+
 |──────run.py
+
 |──────gunicorn.conf.py
 
 
