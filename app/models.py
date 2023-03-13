@@ -30,7 +30,7 @@ class Book(db.Model):
     author = db.Column(db.String(255), nullable=False)
     year = db.Column(db.Integer, nullable=False)
     summary = db.Column(db.Text, nullable=False)
-    photo = db.Column(db.String(20), nullable=False, default='default.jpg')
+    photo = db.Column(db.String(255), nullable=False, default='default.jpg')
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     assigned_to = db.Column(db.Integer)
     user = db.relationship("User", lazy=True)
