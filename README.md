@@ -62,6 +62,8 @@ views (/views.py): Handeling URL request with code.
 
 Static (/images): Images filing with Flask-Pillow.
 
+![image](https://user-images.githubusercontent.com/105554616/224803983-88970cbe-f594-43c6-b377-fb58d1e9045a.png)
+
 
 # Built With:
 
